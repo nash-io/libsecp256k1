@@ -18,8 +18,12 @@ endif
 LIBSECP256K1 = c_src/secp256k1/.libs/libsecp256k1.a
 LIBGMP = c_src/gmp-6.2.1/.libs/libgmp.a
 
+ifeq ($(shell uname),Linux)
+	GMPFLAGS = CFLAGS=-fPIC CPPFLAGS=-DPIC --disable-shared
+endif
+
 ifneq (,$(findstring ios,$(HOST)))
-	GMPFLAGS = --disable-assembly
+	GMPFLAGS += --disable-assembly
 endif
 
 EXTRALIBS += $(LIBSECP256K1) $(LIBGMP)
