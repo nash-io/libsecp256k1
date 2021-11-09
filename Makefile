@@ -18,12 +18,13 @@ endif
 LIBSECP256K1 = c_src/secp256k1/.libs/libsecp256k1.a
 LIBGMP = c_src/gmp-6.2.1/.libs/libgmp.a
 
-ifeq ($(shell uname),Linux)
-	GMPFLAGS = CFLAGS=-fPIC CPPFLAGS=-DPIC --disable-shared
-endif
-
+GMPFLAGS = --with-pic=yes --disable-shared
 ifneq (,$(findstring ios,$(HOST)))
 	GMPFLAGS += --disable-assembly
+endif
+
+ifneq (,$(HOST))
+	HOSTFLAG = --host=$(HOST)
 endif
 
 EXTRALIBS += $(LIBSECP256K1) $(LIBGMP)
@@ -48,14 +49,14 @@ priv/libsecp256k1.a: c_src/libsecp256k1_nif.o
 	$(LIBTOOL) -static -o $@ c_src/libsecp256k1_nif.o $(EXTRALIBS)
 
 $(LIBSECP256K1): c_src/secp256k1
-	cd c_src/secp256k1 && git reset --hard d33352151699bd7598b868369dace092f7855740 && ./autogen.sh && ./configure --enable-module-recovery --host=$(HOST)
+	cd c_src/secp256k1 && git reset --hard d33352151699bd7598b868369dace092f7855740 && ./autogen.sh && ./configure --enable-module-recovery $(HOSTFLAG)
 	$(MAKE) -C c_src/secp256k1
 
 c_src/secp256k1:
 	cd c_src && git clone https://github.com/bitcoin/secp256k1
 
 $(LIBGMP): c_src/gmp-6.2.1
-	cd c_src/gmp-6.2.1 && ./configure --host=$(HOST) $(GMPFLAGS)
+	cd c_src/gmp-6.2.1 && ./configure $(HOSTFLAG) $(GMPFLAGS)
 	$(MAKE) -C c_src/gmp-6.2.1
 
 c_src/gmp-6.2.1:
