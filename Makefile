@@ -9,10 +9,6 @@ CFLAGS += -I$(../libsecp256k1)/src
 
 ifneq ($(OS),Windows_NT)
 	CFLAGS += -fPIC
-
-	ifeq ($(shell uname),Darwin)
-		LDFLAGS += -dynamiclib -undefined dynamic_lookup
-	endif
 endif
 
 LIBSECP256K1 = c_src/secp256k1/.libs/libsecp256k1.a
@@ -32,6 +28,10 @@ EXTRALIBS += $(LIBSECP256K1) $(LIBGMP)
 .PHONY: clean
 
 ifeq ($(STATIC_ERLANG_NIF),)
+ifeq ($(shell uname),Darwin)
+	LDFLAGS += -dynamiclib -undefined dynamic_lookup
+endif
+
 all: priv/libsecp256k1_nif.so
 else
 CFLAGS += -DSTATIC_ERLANG_NIF=1
