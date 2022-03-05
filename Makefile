@@ -8,7 +8,7 @@ CFLAGS += -I c_src/gmp-6.2.1/
 CFLAGS += -I$(../libsecp256k1)/src
 
 ifneq ($(OS),Windows_NT)
-	CFLAGS += -fPIC
+CFLAGS += -fPIC
 endif
 
 LIBSECP256K1 = c_src/secp256k1/.libs/libsecp256k1.a
@@ -16,11 +16,11 @@ LIBGMP = c_src/gmp-6.2.1/.libs/libgmp.a
 
 GMPFLAGS = --with-pic=yes --disable-shared
 ifneq (,$(findstring ios,$(HOST)))
-	GMPFLAGS += --disable-assembly
+GMPFLAGS += --disable-assembly
 endif
 
 ifneq (,$(HOST))
-	HOSTFLAG = --host=$(HOST)
+HOSTFLAG = --host=$(HOST)
 endif
 
 EXTRALIBS += $(LIBSECP256K1) $(LIBGMP)
@@ -29,7 +29,7 @@ EXTRALIBS += $(LIBSECP256K1) $(LIBGMP)
 
 ifeq ($(STATIC_ERLANG_NIF),)
 ifeq ($(shell uname),Darwin)
-	LDFLAGS += -dynamiclib -undefined dynamic_lookup
+LDFLAGS += -dynamiclib -undefined dynamic_lookup
 endif
 
 all: priv/libsecp256k1_nif.so
