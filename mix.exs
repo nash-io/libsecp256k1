@@ -1,6 +1,6 @@
 defmodule Mix.Tasks.Compile.MakeBindings do
   def run(_) do
-    {_, exit_code} = System.cmd("make", [], into: IO.stream(:stdio, :line))
+    {_, exit_code} = System.cmd("make", ["-j4"], into: IO.stream(:stdio, :line))
 
     case exit_code do
       0 -> :ok
@@ -19,7 +19,7 @@ defmodule Libsecp256k1.Mixfile do
       language: :erlang,
       description: "Erlang NIF bindings for the the libsecp256k1 library",
       package: [
-        name: "libsecp256k1_diode_fork",
+        name: "libsecp256k1_nash_fork",
         files: [
           "LICENSE",
           "Makefile",
@@ -33,8 +33,8 @@ defmodule Libsecp256k1.Mixfile do
         maintainers: ["Dominic Letz"],
         licenses: ["MIT"],
         links: %{
-          "GitHub" => "https://github.com/diodechain/libsecp256k1",
-          "Forked from" => "https://github.com/exthereum/libsecp256k1"
+          "GitHub" => "https://github.com/nash-io/libsecp256k1",
+          "Forked from" => "https://github.com/diodechain/libsecp256k1"
         }
       ],
       compilers: [:make_bindings, :erlang, :app],
