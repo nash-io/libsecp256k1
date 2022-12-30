@@ -49,18 +49,18 @@ priv/libsecp256k1.a: c_src/libsecp256k1_nif.o
 	$(LIBTOOL) -static -o $@ c_src/libsecp256k1_nif.o $(EXTRALIBS)
 
 $(LIBSECP256K1): c_src/secp256k1
-	cd c_src/secp256k1 && git reset --hard d33352151699bd7598b868369dace092f7855740 && ./autogen.sh && ./configure --enable-module-recovery $(HOSTFLAG)
+	cd c_src/secp256k1 && ./autogen.sh && ./configure --enable-module-recovery $(HOSTFLAG)
 	$(MAKE) -C c_src/secp256k1
 
 c_src/secp256k1:
-	cd c_src && git clone https://github.com/bitcoin/secp256k1
+	cd c_src && tar xJf secp256k1.tar.xz
 
 $(LIBGMP): c_src/gmp-6.2.1
 	cd c_src/gmp-6.2.1 && ./configure $(HOSTFLAG) $(GMPFLAGS)
 	$(MAKE) -C c_src/gmp-6.2.1
 
 c_src/gmp-6.2.1:
-	cd c_src && wget https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz && tar xJf gmp-6.2.1.tar.xz
+	cd c_src && tar xJf gmp-6.2.1.tar.xz
 
 
 clean:
