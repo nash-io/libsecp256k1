@@ -12,7 +12,7 @@ by adding `libsecp256k1` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:libsecp256k1, "~> 0.1.9"}]
+  [{:libsecp256k1_nash_fork, "~> 0.1.13"}]
 end
 ```
 
