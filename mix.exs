@@ -15,7 +15,7 @@ defmodule Libsecp256k1.Mixfile do
   def project do
     [
       app: :libsecp256k1,
-      version: "0.1.13",
+      version: "0.1.14",
       language: :erlang,
       description: "Erlang NIF bindings for the the libsecp256k1 library",
       package: [
@@ -25,6 +25,8 @@ defmodule Libsecp256k1.Mixfile do
           "Makefile",
           "README.md",
           "c_src/libsecp256k1_nif.c",
+          "c_src/gmp-6.2.1.tar.xz",
+          "c_src/secp256k1.tar.xz",
           "etest/libsecp256k1_tests.erl",
           "mix.exs",
           "priv/.empty",
