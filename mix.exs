@@ -46,7 +46,6 @@ defmodule Libsecp256k1.Mixfile do
 
   defp deps() do
     [
-      {:mix_erlang_tasks, github: "T0ha/mix-erlang-tasks", branch: "patch-1", runtime: false},
       {:ex_doc, "~> 0.17", only: :dev, runtime: false}
     ]
   end
