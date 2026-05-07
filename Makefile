@@ -5,7 +5,6 @@ ERLANG_PATH ?= $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir()
 CFLAGS += -I"$(ERLANG_PATH)"
 CFLAGS += -I c_src/secp256k1 -I c_src/secp256k1/src -I c_src/secp256k1/include
 CFLAGS += -I c_src/gmp-6.2.1/
-CFLAGS += -I$(../libsecp256k1)/src
 
 ifneq ($(OS),Windows_NT)
 CFLAGS += -fPIC
