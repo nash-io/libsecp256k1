@@ -140,8 +140,3 @@ init() ->
     end,
     erlang:load_nif(SoName, 0).
 
-% This is just a simple place holder. It mostly shouldn't ever be called
-% unless there was an unexpected error loading the NIF shared library.
-
-not_loaded(Line) ->
-    exit({not_loaded, [{module, ?MODULE}, {line, Line}]}).

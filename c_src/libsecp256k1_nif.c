@@ -19,7 +19,7 @@
 
 
 static ERL_NIF_TERM atom_from_result(ErlNifEnv* env, int res);
-static ERL_NIF_TERM error_result(ErlNifEnv* env, char* error_msg);
+static ERL_NIF_TERM error_result(ErlNifEnv* env, const char* error_msg);
 static ERL_NIF_TERM ok_result(ErlNifEnv* env, ERL_NIF_TERM *r);
 int get_compressed_flag(ErlNifEnv* env, ERL_NIF_TERM arg, int* compressed, size_t* pubkeylen);
 int check_compressed(size_t Size);
@@ -132,7 +132,7 @@ rand32(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 	ERL_NIF_TERM r;
 	unsigned char* output = enif_make_new_binary(env, 4, &r);
 	uint32_t v = secp256k1_rand32();
-    memcpy(&v, output, 4);
+    memcpy(output, &v, sizeof(v));
 	return r;
 }
 
@@ -155,9 +155,6 @@ static ERL_NIF_TERM
 ec_seckey_verify(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
 	ErlNifBinary privkey;
-	secp256k1_scalar key;
-	unsigned char b32[32];
-    int overflow = 0;
 	int result;
 
 	if (!enif_inspect_binary(env, argv[0], &privkey)) {
@@ -167,13 +164,6 @@ ec_seckey_verify(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     if (privkey.size != 32) {
     	return enif_make_badarg(env);
 	}
-
-	secp256k1_scalar_set_b32(&key, b32, &overflow);
-	if (overflow || secp256k1_scalar_is_zero(&key)) {
-		return enif_make_int(env, 0);
-	}
-
-	secp256k1_scalar_get_b32(privkey.data, &key);
 
     result = secp256k1_ec_seckey_verify(ctx, privkey.data);
     return atom_from_result(env, result);
@@ -491,10 +481,10 @@ ecdsa_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     // DER serialization may return a signature under buffer size
     // need to delay nif binary allocation
-	if (secp256k1_ecdsa_signature_serialize_der(ctx, &intermediatesig, &siglen, &signature) != 1) {
+	if (secp256k1_ecdsa_signature_serialize_der(ctx, intermediatesig, &siglen, &signature) != 1) {
 		return error_result(env, "ecdsa_signature_serialize returned 0");
 	}
-    CHECK(secp256k1_ecdsa_signature_parse_der(ctx, &signature, &intermediatesig, siglen) == 1);
+    CHECK(secp256k1_ecdsa_signature_parse_der(ctx, &signature, intermediatesig, siglen) == 1);
     finishedsig = enif_make_new_binary(env, siglen, &r); 
     memcpy(finishedsig, intermediatesig, siglen);
 	return ok_result(env, &r);
@@ -745,7 +735,7 @@ int get_nonce_function(ErlNifEnv* env, ERL_NIF_TERM nonce_term, ERL_NIF_TERM non
 }
 
 
-static ERL_NIF_TERM error_result(ErlNifEnv* env, char* error_msg)
+static ERL_NIF_TERM error_result(ErlNifEnv* env, const char* error_msg)
 {
     return enif_make_tuple2(env, enif_make_atom(env, "error"), enif_make_string(env, error_msg, ERL_NIF_LATIN1));
 }
@@ -758,7 +748,7 @@ static ERL_NIF_TERM ok_result(ErlNifEnv* env, ERL_NIF_TERM *r)
 static ERL_NIF_TERM
 atom_from_result(ErlNifEnv* env, int res)
 {
-	char* ret_string;
+	const char* ret_string;
 	if (res == 1) {
 		ret_string = "ok";
 	} else {
