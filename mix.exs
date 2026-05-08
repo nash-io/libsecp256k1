@@ -77,7 +77,7 @@ defmodule Libsecp256k1.Mixfile do
   def project do
     [
       app: :libsecp256k1,
-      version: "0.1.15",
+      version: "0.1.16",
       language: :erlang,
       description: "Erlang NIF bindings for the the libsecp256k1 library",
       package: [
@@ -102,7 +102,9 @@ defmodule Libsecp256k1.Mixfile do
         }
       ],
       compilers: [:make_bindings, :erlang, :app],
-      deps: []
+      deps: [
+        {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      ]
     ]
   end
 end
